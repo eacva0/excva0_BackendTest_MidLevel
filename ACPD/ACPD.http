@@ -1,6 +1,0 @@
-@ACPD_HostAddress = http://localhost:5038
-
-GET {{ACPD_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
