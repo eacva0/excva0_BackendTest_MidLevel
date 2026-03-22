@@ -99,6 +99,11 @@ public static partial class MyOfficeAcpdEndpoints
                 await TryAddErrorLogAsync(db, "POST /myofficeacpd", input, ex);
                 return Results.Problem("伺服器內部錯誤", statusCode: StatusCodes.Status500InternalServerError);
             }
+        })
+        .WithOpenApi(operation =>
+        {
+            ApplyMyOfficeAcpdUpsertExample(operation);
+            return operation;
         });
 
         app.MapPut("/myofficeacpd/{sid}", async (string sid, MyOfficeAcpdUpsertRequest input, MercuryTestDbContext db) =>
@@ -142,6 +147,11 @@ public static partial class MyOfficeAcpdEndpoints
                 await TryAddErrorLogAsync(db, "PUT /myofficeacpd/{sid}", new { sid, input }, ex);
                 return Results.Problem("伺服器內部錯誤", statusCode: StatusCodes.Status500InternalServerError);
             }
+        })
+        .WithOpenApi(operation =>
+        {
+            ApplyMyOfficeAcpdUpsertExample(operation);
+            return operation;
         });
 
         app.MapDelete("/myofficeacpd/{sid}", async (string sid, MercuryTestDbContext db) =>
@@ -258,4 +268,31 @@ public static partial class MyOfficeAcpdEndpoints
         }
     }
 
+    private static void ApplyMyOfficeAcpdUpsertExample(OpenApiOperation operation)
+    {
+        if (operation.RequestBody?.Content is null)
+        {
+            return;
+        }
+
+        if (!operation.RequestBody.Content.TryGetValue("application/json", out var mediaType))
+        {
+            return;
+        }
+
+        mediaType.Example = new OpenApiObject
+        {
+            ["acpD_Cname"] = new OpenApiString("王小明"),
+            ["acpD_Ename"] = new OpenApiString("Wang"),
+            ["acpD_Sname"] = new OpenApiString("Ming"),
+            ["acpD_Email"] = new OpenApiString("ming.wang@contoso.com"),
+            ["acpD_Status"] = new OpenApiInteger(1),
+            ["acpD_Stop"] = new OpenApiBoolean(false),
+            ["acpD_StopMemo"] = new OpenApiString(""),
+            ["acpD_LoginID"] = new OpenApiString("wangming"),
+            ["acpD_LoginPWD"] = new OpenApiString("P@ssw0rd"),
+            ["acpD_Memo"] = new OpenApiString("Swagger 測試資料"),
+            ["acpD_UPDID"] = new OpenApiString("A12345")
+        };
+    }
 }
